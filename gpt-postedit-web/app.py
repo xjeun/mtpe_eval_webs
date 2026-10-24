@@ -82,7 +82,7 @@ with tab1:
         needs_context = prompt_type in NEEDS_CONTEXT_TYPES
 
         st.subheader("1) 샘플 파일 업로드 (필수)")
-        st.caption("필수 컬럼: ID, source_text, reference, deepl_translation")
+        st.caption("필수 컬럼: ID, source_text, reference, deepl_translation (deepl-eval-web 결과 엑셀을 그대로 올리면 됩니다)")
         uploaded = st.file_uploader("샘플 엑셀 업로드 (.xlsx)", type=["xlsx"], key="sample")
 
         full_corpus_df = None
@@ -299,8 +299,9 @@ with tab2:
     # ---- 파일 업로드 ----
     st.subheader("1) 실험 파일 업로드 (필수)")
     st.caption(
-        "필수 컬럼: index(또는 ID), source_text, reference, "
-        "deepl_translation, DeepL_CometKiwi, DeepL_COMET"
+        "필수 컬럼: ID, source_text, reference, "
+        "deepl_translation, DeepL_CometKiwi, DeepL_COMET "
+        "(deepl-eval-web 결과 엑셀을 그대로 올리면 됩니다)"
     )
     t2_uploaded = st.file_uploader(
         "실험 엑셀 업로드 (.xlsx)", type=["xlsx"], key="t2_sample"
@@ -311,7 +312,7 @@ with tab2:
     st.subheader("2) 컬럼 설정")
     c1, c2, c3 = st.columns(3)
     with c1:
-        t2_id_col  = st.text_input("ID 컬럼명", value="index", key="t2_id")
+        t2_id_col  = st.text_input("ID 컬럼명", value="ID", key="t2_id")
         t2_src_col = st.text_input("원문 컬럼명", value="source_text", key="t2_src")
     with c2:
         t2_ref_col      = st.text_input("참조번역 컬럼명", value="reference", key="t2_ref")

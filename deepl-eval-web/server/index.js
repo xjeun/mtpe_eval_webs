@@ -116,6 +116,7 @@ async function readXlsxRows(filePath) {
     if (key) headers[key] = colNumber;
   });
 
+  const idCol     = findColumn(headers, ["id", "index", "번호"]);  // 없으면 1부터 매긴다
   const sourceCol = findColumn(headers, ["source_text", "source", "src", "원문"]);
   const refCol    = findColumn(headers, ["reference", "ref", "참조", "정답", "reference_text"]);
 
@@ -128,10 +129,17 @@ async function readXlsxRows(filePath) {
   const rows = [];
   for (let r = 2; r <= ws.rowCount; r++) {
     const row          = ws.getRow(r);
-    const source_text  = String(row.getCell(sourceCol).value ?? "").trim();
-    const reference    = String(row.getCell(refCol).value    ?? "").trim();
+    // .text: 서식 있는 텍스트(richText)·수식 셀도 보이는 글자 그대로 읽는다 (.value 는 "[object Object]" 가 될 수 있다)
+    const source_text  = String(row.getCell(sourceCol).text ?? "").trim();
+    const reference    = String(row.getCell(refCol).text    ?? "").trim();
     if (!source_text && !reference) continue;
-    rows.push({ row_index: r, source_text, reference });
+    const id = idCol ? String(row.getCell(idCol).text ?? "").trim() : "";
+    rows.push({ row_index: r, id: id || String(rows.length + 1), source_text, reference });
+  }
+
+  const ids = rows.map((x) => x.id);
+  if (new Set(ids).size !== ids.length) {
+    throw new Error("ID column has duplicate values. GPT post-edit web needs unique IDs.");
   }
 
   if (rows.length === 0) throw new Error("No data rows found.");
@@ -197,33 +205,34 @@ function mean(arr) {
   return nums.reduce((a, b) => a + b, 0) / nums.length;
 }
 
-// ✅ COMET-kiwi 컬럼 및 summary 행 추가
+// ✅ results 시트 컬럼명은 gpt-postedit-web 기본값과 똑같이 맞춘다
+//    → 이 파일을 후편집 웹 탭 1·탭 2 에 그대로 올리면 컬럼명을 고칠 필요가 없다
 async function buildOutputWorkbook(allRows, summary) {
   const wb = new ExcelJS.Workbook();
 
   // ---- results sheet ----
   const ws = wb.addWorksheet("results");
   ws.columns = [
-    { header: "index",            key: "index",            width: 8  },
+    { header: "ID",               key: "ID",               width: 8  },
     { header: "source_text",      key: "source_text",      width: 60 },
     { header: "reference",        key: "reference",        width: 60 },
     { header: "deepl_translation",key: "deepl_translation",width: 60 },
-    { header: "BLEU",             key: "BLEU",             width: 10 },
-    { header: "chrF",             key: "chrF",             width: 10 },
-    { header: "COMET",            key: "COMET",            width: 10 },
-    { header: "COMET-kiwi",       key: "COMETkiwi",        width: 12 }, // ✅ 추가
+    { header: "DeepL_BLEU",       key: "DeepL_BLEU",       width: 12 },
+    { header: "DeepL_chrF",       key: "DeepL_chrF",       width: 12 },
+    { header: "DeepL_COMET",      key: "DeepL_COMET",      width: 14 },
+    { header: "DeepL_CometKiwi",  key: "DeepL_CometKiwi",  width: 16 },
   ];
 
-  allRows.forEach((r, idx) => {
+  allRows.forEach((r) => {
     ws.addRow({
-      index:             idx + 1,
+      ID:                r.id,
       source_text:       r.source_text,
       reference:         r.reference,
       deepl_translation: r.deepl_translation,
-      BLEU:              r.bleu,
-      chrF:              r.chrf,
-      COMET:             r.comet,
-      COMETkiwi:         r.cometkiwi,  // ✅ 추가
+      DeepL_BLEU:        r.bleu,
+      DeepL_chrF:        r.chrf,
+      DeepL_COMET:       r.comet,
+      DeepL_CometKiwi:   r.cometkiwi,
     });
   });
   ws.getRow(1).font = { bold: true };

@@ -40,14 +40,16 @@ HF_TOKEN=여기에_HuggingFace_토큰
 
 ### 입력 파일
 
-`deepl-eval-web` 결과 엑셀을 그대로 쓰면 됩니다. 이때 **ID 컬럼명을 `ID` → `index` 로 바꿔 입력**하세요.
+**`deepl-eval-web` 결과 엑셀을 그대로 올리면 됩니다.** 컬럼명이 이 웹의 기본값과 똑같이 나오므로 입력란을 고칠 필요가 없습니다.
 
-| 컬럼 | 기본 이름 | deepl-eval-web 결과에서의 이름 |
-|---|---|---|
-| ID | `ID` | `index` |
-| 원문 | `source_text` | `source_text` |
-| 참조번역 | `reference` | `reference` |
-| DeepL 번역 | `deepl_translation` | `deepl_translation` |
+| 컬럼 | 기본 이름 (= deepl-eval-web 결과 컬럼) |
+|---|---|
+| ID | `ID` |
+| 원문 | `source_text` |
+| 참조번역 | `reference` |
+| DeepL 번역 | `deepl_translation` |
+
+다른 곳에서 만든 엑셀을 쓸 때만 입력란에 그 파일의 헤더 이름을 적으세요. ID 는 문장마다 달라야 합니다.
 
 ### 프롬프트 타입
 
@@ -76,14 +78,14 @@ P1/P2 계열은 영화 **〈기생충〉(2019) 자막** 실험용으로 작성�
 ## 5. 사용 — 탭 2 (임계값 실험)
 
 1. 도착 언어, **COMETkiwi 임계값**(0.60~0.85), 모델 선택
-2. `deepl-eval-web` 결과 엑셀 업로드
-3. 컬럼명을 결과 파일에 맞게 입력
+2. `deepl-eval-web` 결과 엑셀을 **그대로** 업로드 (컬럼명 입력란은 기본값 그대로 두면 됩니다)
 
-| 입력란 | 기본값 | deepl-eval-web 결과에서의 이름 |
-|---|---|---|
-| ID | `index` | `index` |
-| DeepL COMETkiwi | `DeepL_CometKiwi` | **`COMET-kiwi`** |
-| DeepL COMET | `DeepL_COMET` | **`COMET`** |
+| 입력란 | 기본값 (= deepl-eval-web 결과 컬럼) |
+|---|---|
+| ID | `ID` |
+| 원문 / 참조번역 / DeepL 번역 | `source_text` / `reference` / `deepl_translation` |
+| DeepL COMETkiwi | `DeepL_CometKiwi` |
+| DeepL COMET | `DeepL_COMET` |
 
 임계값 미만 문장만 `P1-title` 프롬프트로 후편집되므로, 전체를 후편집할 때보다 API 비용이 적게 듭니다.
 

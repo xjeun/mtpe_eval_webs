@@ -12,8 +12,8 @@
  samples/sample_input.xlsx           (source_text, reference)
           │
           ▼
- ① deepl-eval-web   ──►  deepl_eval_KO-EN_....xlsx  (+ deepl_translation, BLEU, chrF, COMET, COMET-kiwi)
-          │
+ ① deepl-eval-web   ──►  deepl_eval_KO-EN_....xlsx  (ID, + deepl_translation, DeepL_BLEU, DeepL_chrF, DeepL_COMET, DeepL_CometKiwi)
+          │   ← 이 파일을 그대로 다음 웹에 올리면 됩니다 (컬럼명 수정 불필요)
           ▼
  ② gpt-postedit-web ──►  gpt_P0_english_metrics.xlsx (+ gpt_hyp, sent_bleu, sent_comet, ...)
 ```

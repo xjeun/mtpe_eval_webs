@@ -49,6 +49,7 @@ HF_TOKEN=여기에_HuggingFace_토큰
 1. 출발/도착 언어 선택 (기본 KO → EN)
 2. xlsx 업로드 — **1행 헤더에 `source_text`, `reference` 컬럼 필수**
    (`source`/`src`/`원문`, `ref`/`참조`/`정답` 같은 이름도 인식합니다)
+   - `ID`(또는 `id`/`index`/`번호`) 컬럼이 있으면 그 값을 그대로 쓰고, 없으면 1, 2, 3… 으로 매깁니다. ID 는 문장마다 달라야 합니다.
 3. **Evaluate & Download** → `deepl_eval_KO-EN_<시각>.xlsx` 가 내려받아집니다.
 
 연습용 파일: [`../samples/sample_input.xlsx`](../samples/sample_input.xlsx) (5문장)
@@ -57,16 +58,17 @@ HF_TOKEN=여기에_HuggingFace_토큰
 
 | 시트 | 컬럼 |
 |---|---|
-| `results` | index, source_text, reference, deepl_translation, BLEU, chrF, COMET, COMET-kiwi |
+| `results` | ID, source_text, reference, deepl_translation, DeepL_BLEU, DeepL_chrF, DeepL_COMET, DeepL_CometKiwi |
 | `summary` | 문장 수, 문장 평균, 코퍼스 BLEU/chrF, COMET system score |
 
-이 파일을 그대로 [`gpt-postedit-web`](../gpt-postedit-web/) 에 넣을 수 있습니다.
+컬럼명이 [`gpt-postedit-web`](../gpt-postedit-web/) 기본값과 똑같으므로, **이 파일을 후편집 웹 탭 1·탭 2 에 그대로 올리면 됩니다** (컬럼명 수정 불필요).
 
 ## 자주 나는 오류
 
 | 증상 | 원인 / 해결 |
 |---|---|
 | `DEEPL_API_KEY is missing` | `.env` 가 없거나 키가 비어 있음 |
+| `ID column has duplicate values` | 입력 파일의 ID 컬럼에 같은 값이 두 번 이상 있음. 고유하게 고치거나 ID 컬럼을 지우면 1부터 자동으로 매깁니다 |
 | `403` / `Wrong endpoint` | Free 키인데 `api.deepl.com`, 또는 그 반대. `DEEPL_API_URL` 확인 |
 | `456 Quota exceeded` | DeepL 월 사용량 초과 |
 | scorer 창에 `401` / `gated repo` | COMETkiwi 라이선스 미동의 또는 `HF_TOKEN` 누락 |
