@@ -5,12 +5,10 @@ from datetime import datetime
 import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv
-from huggingface_hub import login
 
+# .env 의 HF_TOKEN 이 환경변수로 올라가면 huggingface_hub 가 알아서 읽는다
+# (COMETkiwi 는 gated 모델이라 이 토큰이 있어야 다운로드된다)
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
-# COMETkiwi(gated 모델) 다운로드용 HuggingFace 토큰은 .env 의 HF_TOKEN 에서 읽는다
-if os.getenv("HF_TOKEN", "").strip():
-    login(token=os.getenv("HF_TOKEN").strip())
 
 from gpt_translate import translate_dataframe, PROMPT_TYPES, NEEDS_CONTEXT_TYPES
 from metrics import compute_metrics

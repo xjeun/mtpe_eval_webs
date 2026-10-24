@@ -1,15 +1,12 @@
 # deepl-eval-web/scorer/app.py
 
-import os
 from pathlib import Path
 from dotenv import load_dotenv
-from huggingface_hub import login
 
-# deepl-eval-web/.env 하나를 server 와 같이 쓴다
+# deepl-eval-web/.env 하나를 server 와 같이 쓴다.
+# HF_TOKEN 이 환경변수로 올라가면 huggingface_hub 가 알아서 읽는다
+# (COMETkiwi 는 gated 모델이라 이 토큰이 있어야 다운로드된다)
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
-# COMETkiwi(gated 모델) 다운로드용 HuggingFace 토큰
-if os.getenv("HF_TOKEN", "").strip():
-    login(token=os.getenv("HF_TOKEN").strip())
 
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI
