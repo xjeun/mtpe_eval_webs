@@ -22,7 +22,7 @@ HF_TOKEN=여기에_HuggingFace_토큰
 
 ## 3. 실행
 
-**`run.bat`** 을 더블클릭하면 브라우저에서 http://localhost:8501 이 열립니다.
+**`start.bat`** 을 더블클릭하면 브라우저에서 http://localhost:8501 이 열립니다.
 
 처음 지표를 계산할 때 COMET 모델 2개(약 5GB)를 내려받으므로 오래 걸립니다.
 
@@ -96,7 +96,7 @@ GPT 비용은 문장 수 × 프롬프트 길이에 비례합니다. 처음에는
 
 | 증상 | 원인 / 해결 |
 |---|---|
-| `OPENAI_API_KEY 환경변수가 비어있어요` | `.env` 가 없거나 키가 비어 있음. 수정 후 `run.bat` 재시작 |
+| `OPENAI_API_KEY 환경변수가 비어있어요` | `.env` 가 없거나 키가 비어 있음. 수정 후 `start.bat` 재시작 |
 | `필수 컬럼이 없어요` | 컬럼명 입력란을 엑셀 헤더와 똑같이 (대소문자 포함) |
 | `401` / `gated repo` | COMETkiwi 라이선스 미동의 또는 `HF_TOKEN` 누락 |
 | `429 Rate limit` | Request 간 sleep 을 늘리거나 잠시 후 재시도 |

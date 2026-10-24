@@ -67,7 +67,7 @@ git clone https://github.com/<계정>/mtpe_eval_webs.git
 - [deepl-eval-web/README.md](deepl-eval-web/README.md)
 - [gpt-postedit-web/README.md](gpt-postedit-web/README.md)
 
-요약하면 둘 다 **`setup.bat` → `.env` 에 키 입력 → `start.bat` / `run.bat`** 순서입니다.
+요약하면 둘 다 **`setup.bat` → `.env` 에 키 입력 → `start.bat`** 순서입니다. (두 웹 모두 파일 이름이 같습니다)
 
 ## 4. 지표 읽는 법
 

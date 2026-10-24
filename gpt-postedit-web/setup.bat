@@ -20,7 +20,7 @@ if not exist .env (
 )
 
 echo.
-echo 완료. run.bat 으로 실행하세요.
+echo 완료. start.bat 으로 실행하세요.
 pause
 exit /b 0
 
