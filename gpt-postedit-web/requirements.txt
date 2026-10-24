@@ -1,0 +1,18 @@
+# Python 3.11 기준. 실제 연구 환경에서 동작 확인된 버전으로 고정했다.
+
+# torch 는 CPU 판을 받는다 (GPU 판은 2GB 이상이라 설치가 오래 걸린다)
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+streamlit==1.37.1
+pandas==2.2.2
+openpyxl==3.1.5
+python-dotenv==1.0.1
+openai==2.16.0
+sacrebleu==2.4.3
+tqdm==4.66.5
+torch==2.10.0
+unbabel-comet==2.2.7
+
+# comet 2.2.7 이 쓰는 torchmetrics 0.10.x 가 pkg_resources 를 쓰는데
+# setuptools 81 부터 그게 빠졌다. 내려두지 않으면 import comet 에서 죽는다.
+setuptools<81

@@ -1,0 +1,25 @@
+# ---- 비밀 정보 (절대 올리지 않기) ----
+.env
+.env.*
+!.env.example
+
+# ---- 설치물 / 캐시 ----
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+.hf_cache/
+
+# ---- 실행하면 생기는 파일 ----
+deepl-eval-web/server/uploads/
+token_usage_log.csv
+*.xlsx
+!samples/*.xlsx
+*.csv
+!samples/*.csv
+
+# ---- OS / 에디터 ----
+.DS_Store
+Thumbs.db
+.vscode/

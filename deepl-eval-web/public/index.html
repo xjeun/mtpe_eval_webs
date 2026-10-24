@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>DeepL Translation Evaluation</title>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --card:#111827;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --line:#1f2937;
+      --accent:#60a5fa;
+      --accent2:#a78bfa;
+      --danger:#fb7185;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(1200px 700px at 15% 10%, rgba(96,165,250,.18), transparent 60%),
+                  radial-gradient(900px 600px at 85% 20%, rgba(167,139,250,.14), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:980px; margin:40px auto; padding:0 18px;}
+    .top{
+      display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
+      margin-bottom:18px;
+    }
+    h1{font-size:22px; margin:0; letter-spacing:.2px;}
+    .sub{color:var(--muted); margin-top:6px; font-size:13px; line-height:1.4}
+    .badge{
+      font-size:12px; color:var(--muted); border:1px solid var(--line);
+      padding:6px 10px; border-radius:999px; background:rgba(17,24,39,.6);
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot{width:8px; height:8px; border-radius:50%; background:var(--muted);}
+    .card{
+      background: rgba(17,24,39,.78);
+      border:1px solid var(--line);
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+    .card-hd{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .card-hd .title{font-weight:600}
+    .card-bd{padding:18px}
+    .grid{
+      display:grid; grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:7px;}
+    select, input[type="file"]{
+      width:100%;
+      background: rgba(2,6,23,.4);
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    input[type="file"]{padding:12px}
+    select:focus, input[type="file"]:focus{border-color: rgba(96,165,250,.6)}
+    .row{margin-top:14px}
+    .btn{
+      width:100%;
+      border:0;
+      padding:12px 14px;
+      border-radius:12px;
+      background: linear-gradient(90deg, rgba(96,165,250,.95), rgba(167,139,250,.95));
+      color:#0b0f17;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .05s ease;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn:disabled{
+      opacity:.55; cursor:not-allowed;
+    }
+    .hint{color:var(--muted); font-size:12px; margin-top:10px; line-height:1.5}
+    .log{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(2,6,23,.35);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+      min-height:42px;
+      white-space:pre-wrap;
+    }
+    .err{color:var(--danger)}
+    .ok{color:#86efac}
+    .foot{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    a{color:var(--accent); text-decoration:none}
+    @media (max-width:720px){
+      .grid{grid-template-columns: 1fr;}
+      .top{flex-direction:column; align-items:flex-start}
+      .badge{align-self:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>DeepL Translation Evaluation</h1>
+        <div class="sub">
+          XLSX 업로드 → DeepL 번역 → BLEU/chrF/COMET 계산 → 결과 XLSX 다운로드
+        </div>
+      </div>
+      <div class="badge" id="statusBadge">
+        <span class="dot" id="dot"></span>
+        <span id="statusText">Idle</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="title">Run Evaluation</div>
+        <div style="color:var(--muted); font-size:12px;">필수 컬럼: <b>source_text</b>, <b>reference</b></div>
+      </div>
+      <div class="card-bd">
+        <form id="form">
+          <div class="grid">
+            <div>
+              <label>출발 언어</label>
+              <select name="sourceLang" id="sourceLang">
+                <option value="KO" selected>KO (Korean)</option>
+                <option value="EN">EN (English)</option>
+                <option value="FR">FR (French)</option>
+                <option value="DE">DE (German)</option>
+                <option value="ES">ES (Spanish)</option>
+                <option value="IT">IT (Italian)</option>
+                <option value="JA">JA (Japanese)</option>
+                <option value="ZH">ZH (Chinese)</option>
+              </select>
+            </div>
+            <div>
+              <label>도착 언어</label>
+              <select name="targetLang" id="targetLang">
+                <option value="EN" selected>EN (English)</option>
+                <option value="KO">KO (Korean)</option>
+                <option value="FR">FR (French)</option>
+                <option value="DE">DE (German)</option>
+                <option value="ES">ES (Spanish)</option>
+                <option value="IT">IT (Italian)</option>
+                <option value="JA">JA (Japanese)</option>
+                <option value="ZH">ZH (Chinese)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <label>XLSX 파일 업로드</label>
+            <input type="file" id="file" accept=".xlsx" />
+            <div class="hint">
+              1행 헤더에 <b>source_text</b>, <b>reference</b> 컬럼이 있어야 합니다.<br/>
+              문장 수가 많을수록 DeepL/COMET 때문에 시간이 걸릴 수 있어요.
+            </div>
+          </div>
+
+          <div class="row">
+            <button class="btn" id="btn" type="submit">Evaluate & Download</button>
+            <div class="log" id="log">준비됨.</div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div>Scorer: <a href="http://127.0.0.1:8001/docs" target="_blank">http://127.0.0.1:8001/docs</a></div>
+      <div>Tip: scorer(8001) + server(3000) 둘 다 켜져 있어야 합니다.</div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const fileEl = document.getElementById("file");
+    const btn = document.getElementById("btn");
+    const logEl = document.getElementById("log");
+    const statusText = document.getElementById("statusText");
+    const dot = document.getElementById("dot");
+
+    function setStatus(state, msg){
+      statusText.textContent = state;
+      logEl.textContent = msg || "";
+      dot.style.background = state === "Running" ? "#fbbf24" : (state === "Done" ? "#86efac" : (state === "Error" ? "#fb7185" : "#94a3b8"));
+      logEl.className = "log" + (state === "Error" ? " err" : (state === "Done" ? " ok" : ""));
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const file = fileEl.files?.[0];
+      if (!file){
+        setStatus("Error", "파일을 선택해줘!");
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus("Running", "처리 중... (DeepL 번역 + COMET 계산은 시간이 걸릴 수 있어요)");
+
+      try{
+        const sourceLang = document.getElementById("sourceLang").value;
+        const targetLang = document.getElementById("targetLang").value;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("sourceLang", sourceLang);
+        fd.append("targetLang", targetLang);
+
+        const resp = await fetch("/api/evaluate", {
+          method: "POST",
+          body: fd
+        });
+
+        if (!resp.ok){
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error || ("서버 오류: " + resp.status));
+        }
+
+        const blob = await resp.blob();
+        const disposition = resp.headers.get("Content-Disposition") || "";
+        let filename = "deepl_eval.xlsx";
+        const match = disposition.match(/filename="([^"]+)"/);
+        if (match?.[1]) filename = match[1];
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        setStatus("Done", "완료! 결과 파일 다운로드가 시작됐어.");
+      } catch(err){
+        setStatus("Error", err.message || String(err));
+      } finally{
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

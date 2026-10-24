@@ -1,0 +1,16 @@
+{
+  "name": "deepl-eval-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.18.3",
+    "multer": "^1.4.5-lts.1"
+  }
+}
