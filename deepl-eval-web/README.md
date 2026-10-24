@@ -39,7 +39,7 @@ HF_TOKEN=여기에_HuggingFace_토큰
 
 | 창 | 내용 |
 |---|---|
-| `scorer-8001` | 처음엔 COMET 모델 2개(약 5GB)를 내려받습니다. **`COMETkiwi loaded.`** 가 뜰 때까지 기다리세요. |
+| `scorer-8001` | 처음엔 COMET 모델 2개(약 5GB)를 내려받습니다. 시간이 오래 걸리니 **`COMETkiwi loaded.`** 가 뜰 때까지 기다리세요. |
 | `server-3000` | `Server running: http://127.0.0.1:3000` |
 
 브라우저에서 **http://127.0.0.1:3000** 을 엽니다.
